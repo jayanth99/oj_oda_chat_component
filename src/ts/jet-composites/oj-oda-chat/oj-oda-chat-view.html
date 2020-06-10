@@ -1,0 +1,463 @@
+<!--
+  Copyright (c) 2020, Oracle and/or its affiliates.
+  The Universal Permissive License (UPL), Version 1.0
+-->
+<!-- Chat button -->
+<oj-button class="oj-oda-chat-button" on-oj-action="[[onClickChatButton]]">
+    <span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 48 48">
+            <path d="M0 24a24 24 0 1 0 48 0 24 24 0 1 0-48 0" fill="#1b8fd2" opacity=".8" />
+            <path d="M32.25 31.084h-7.532L19.2 37.021a1.061 1.061 0 0 1-1.251-1.316l.031-4.622h-1.23C12.47 31.084 9 28.372 9 23.97A7.862 7.862 0 0 1 16.75 16h15.5A7.862 7.862 0 0 1 40 23.97c0 4.402-3.47 7.114-7.75 7.114zM16.531 20.938a2.594 2.594 0 1 0 2.594 2.594 2.594 2.594 0 0 0-2.594-2.594zm7.969-.031a2.594 2.594 0 1 0 2.594 2.593 2.594 2.594 0 0 0-2.594-2.594zm7.969.031a2.594 2.594 0 1 0 2.594 2.594 2.594 2.594 0 0 0-2.594-2.594z" fill="#ffffff" fill-rule="evenodd" />
+        </svg>
+    </span>
+    <!-- ko if: unseenMessageCount() > 0 -->
+        <div class="oj-oda-notification-badge">
+            <oj-bind-text value="[[unseenMessageCount]]"></oj-bind-text>
+        </div>
+    <!-- /ko -->
+</oj-button>
+
+<!-- Chat widget -->
+<div class="oj-oda-chat-widget" data-bind="let: {root: $data}">
+    <!-- header -->
+    <div class="oj-oda-chat-header">
+        <div class="oj-oda-chat-logo">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="#FFFFFF" width="24" height="24" viewBox="0 0 24 24">
+                <path class="svg-icon16" d="M18 16.99h-6.267L8 21.125a1.119 1.119 0 0 1-1.021-1.36V16.99H6a5.849 5.849 0 0 1-6-5.87A6.061 6.061 0 0 1 6 5h12a6.061 6.061 0 0 1 6 6.12 5.849 5.849 0 0 1-6 5.87zM6 9a2 2 0 1 0 2 2 2 2 0 0 0-2-2zm6 0a2 2 0 1 0 2 2 2 2 0 0 0-2-2zm6 0a2 2 0 1 0 2 2 2 2 0 0 0-2-2z" />
+            </svg>
+        </div>
+        <!-- title and connection status wrapper -->
+        <div class="oj-oda-chat-title-wrapper">
+            <h1 class="oj-oda-chat-title">
+                <span>
+                    <oj-bind-text value="[[title]]"></oj-bind-text>
+                </span>
+            </h1>
+            <!-- ko if: isDisplayStatus() -->
+                <h2 class="oj-oda-chat-connection-status">
+                    <span>
+                        <oj-bind-text value="[[connectionStatus]]"></oj-bind-text>
+                    </span>
+                </h2>
+            <!-- /ko -->
+        </div>
+
+        <!-- buttons wrapper -->
+        <div>
+            <!-- Clear history -->
+            <!-- ko if: isErasable() -->
+                <oj-button class="oj-button-sm oj-oda-chat-header-button oj-oda-chat-clear" chroming="borderless"
+                    display="icons" on-oj-action="[[onClickClear]]">
+                    <svg slot="startIcon" xmlns="http://www.w3.org/2000/svg" fill="#ffffff" width="16" height="16" viewBox="0 0 16 16">
+                        <path d="M1.777 7.11 h12.446v1.78H1.777zM0 10.668h12.445v1.777H0zm3.555-7.113H16v1.777H3.555zm0 0" />
+                    </svg>
+                    <oj-bind-text value="[[res.clear]]"></oj-bind-text>
+                </oj-button>
+            <!-- /ko -->
+
+            <!-- Utter responses -->
+            <!-- ko if: isUtterance() -->
+                <!-- ko if: isTtsActive() -->
+                    <oj-button chroming="borderless" display="icons" on-oj-action="[[onClickUtterance]]"
+                        class="oj-button-sm oj-oda-chat-header-button oj-oda-chat-utterance">
+                        <svg slot="startIcon" xmlns="http://www.w3.org/2000/svg" fill="#ffffff" width="16" height="16" viewBox="0 0 16 16">
+                            <path d="M8 16l-4.968-5.005H1.546A1.7 1.7 0 0 1-.019 9.109V6.751A1.572 1.572 0 0 1 1.515 4.98H3L8 0v16zm3.28-1.045l-.736-1.206a6.173 6.173 0 0 0 0-11.6L11.28.941a7.562 7.562 0 0 1 0 14.014zm1.695-7.007A4.8 4.8 0 0 1 9.6 12.542l-.684-1.233a3.367 3.367 0 0 0 2.646-3.361 3.367 3.367 0 0 0-2.646-3.36L9.6 3.355a4.8 4.8 0 0 1 3.375 4.593z" />
+                        </svg>
+                        <oj-bind-text value="[[res.audioResponseOff]]"></oj-bind-text>
+                    </oj-button>
+                <!-- /ko -->
+
+                <!-- ko ifnot: isTtsActive() -->
+                    <oj-button chroming="borderless" display="icons" on-oj-action="[[onClickUtterance]]"
+                        class="oj-button-sm oj-oda-chat-header-button oj-oda-chat-utterance">
+                        <svg slot="startIcon" xmlns="http://www.w3.org/2000/svg" fill="#ffffff" width="16" height="16" viewBox="0 0 16 16">
+                            <path d="M8 16l-4.968-5.005H1.546A1.7 1.7 0 0 1-.019 9.109V6.751A1.572 1.572 0 0 1 1.515 4.98H3L8 0v16zm8.094-10.094L14 8.027l2.07 2.068-.926.988L13.037 9l-2.087 2.115-1.05-.989 2.114-2.137-2.076-2.051.969-1 2.074 2.072 2.081-2.1z" />
+                        </svg>
+                        <oj-bind-text value="[[res.audioResponseOn]]"></oj-bind-text>
+                    </oj-button>
+                <!-- /ko -->
+            <!-- /ko -->
+
+            <!-- Collapse widget -->
+            <!-- ko if: isCollapsible() -->
+                <oj-button chroming="borderless" display="icons" on-oj-action="[[onClickClose]]"
+                    class="oj-button-sm oj-oda-chat-header-button oj-oda-chat-close">
+                    <svg slot="startIcon" xmlns="http://www.w3.org/2000/svg" fill="#ffffff" width="16" height="16"
+                        viewBox="0 0 16 16">
+                        <path d="M.031 13H16l-.031 2H0z" />
+                    </svg>
+                    <oj-bind-text value="[[res.close]]"></oj-bind-text>
+                </oj-button>
+            <!-- /ko -->
+        </div>
+    </div>
+
+    <!-- conversation -->
+    <div class="oj-oda-chat-conversation">
+        <div class="oj-oda-chat-conversation-scroller">
+            <!-- ko foreach: messages() -->
+                <div class="oj-oda-chat-message" data-bind="attr: {
+                    id: 'oj-oda-chat-message-' + $index()
+                }, css: {
+                    'oj-oda-chat-message-left': sender === root.ENUMS.SENDER.BOT,
+                    'oj-oda-chat-message-right': sender === root.ENUMS.SENDER.USER
+                }">
+                    <!-- USER MESSAGE -->
+                    <!-- ko if: sender === root.ENUMS.SENDER.USER -->
+
+                        <!-- TEXT MESSAGE -->
+                        <!-- ko if: type === root.ENUMS.PAYLOAD_TYPE.TEXT -->
+                            <div class="oj-oda-chat-bubble oj-oda-chat-user-message">
+                                <div data-bind="text: text"></div>
+                            </div>
+                        <!-- /ko -->
+
+                        <!-- LOCATION MESSAGE -->
+                        <!-- ko if: type === root.ENUMS.PAYLOAD_TYPE.LOCATION -->
+                            <div class="oj-oda-chat-bubble oj-oda-chat-user-message">
+                                <div data-bind="text: latitude + ', ' + longitude"></div>
+                            </div>
+
+                            <a class="oj-oda-chat-action oj-oda-chat-user-location-url" :href="[[url]]" target="_blank"
+                                data-bind="text: root.res.openMap"></a>
+                        <!-- /ko -->
+
+                        <!-- ATTACHMENT MESSAGE -->
+                        <!-- ko if: type === root.ENUMS.PAYLOAD_TYPE.ATTACHMENT -->
+                            <div class="oj-oda-chat-bubble oj-oda-chat-user-message">
+                                <div class="oj-oda-chat-user-message-attachment-wrapper">
+                                    <!-- Attachment uploading -->
+                                    <!-- ko if: isUploaded() === undefined -->
+                                        <oj-progress class="oj-oda-chat-message-progress" type="circle" value="-1"></oj-progress>
+                                    <!-- /ko -->
+
+                                    <!-- Attachment uploaded -->
+                                    <!-- ko if: isUploaded() -->
+                                        <div class="oj-oda-chat-message-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                                <path
+                                                    d="M6 2c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6H6zm7 7V3.5L18.5 9H13z" />
+                                                <path d="M0 0h24v24H0z" fill="none" /></svg>
+                                        </div>
+                                    <!-- /ko -->
+
+                                    <!-- Attachment upload cancelled -->
+                                    <!-- ko if: isUploaded() !== undefined && !isUploaded() -->
+                                        <div class="oj-oda-chat-message-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#E4001E">
+                                                <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z" />
+                                                <path d="M0 0h24v24H0z" fill="none" />
+                                            </svg>
+                                        </div>
+                                    <!-- /ko -->
+
+                                    <!-- Attachment file name -->
+                                    <div data-bind="text: name"></div>
+                                </div>
+
+                                <!-- Attachment error message -->
+                                <!-- ko if: isUploaded() !== undefined && !isUploaded() -->
+                                    <div class="oj-oda-chat-user-message-error" data-bind="text: errorMessage"></div>
+                                <!-- /ko -->
+
+                                <!-- ko if: isUploaded() -->
+                                    <div class="oj-oda-chat-user-attachment">
+                                        <!-- ko if: fileType === root.ENUMS.ATTACHMENT_TYPE.IMAGE -->
+                                            <img class="oj-oda-chat-image" :src="[[url]]" />
+                                        <!-- /ko -->
+
+                                        <!-- ko if: fileType === root.ENUMS.ATTACHMENT_TYPE.VIDEO -->
+                                            <video class="oj-oda-chat-video" :src="[[url]]" controls>
+                                                <p>
+                                                    <div
+                                                        data-bind="text: root.res.incompatibleVideo">
+                                                    </div>
+                                                    <a :href="[[url]]" target="_blank" download data-bind="text: root.res.downloadFile"></a>
+                                                </p>
+                                            </video>
+                                        <!-- /ko -->
+
+                                        <!-- ko if: fileType === root.ENUMS.ATTACHMENT_TYPE.AUDIO -->
+                                            <audio class="oj-oda-chat-audio" :src="[[url]]" controls>
+                                                <p>
+                                                    <div
+                                                        data-bind="text: root.res.incompatibleAudio">
+                                                    </div>
+                                                    <a :href="[[url]]" target="_blank" download data-bind="text: root.res.downloadFile"></a>
+                                                </p>
+                                            </audio>
+                                        <!-- /ko -->
+
+                                        <!-- ko if: fileType === root.ENUMS.ATTACHMENT_TYPE.FILE -->
+                                            <a class="oj-oda-chat-file" :href="[[url]]" target="_blank" download
+                                                data-bind="text: root.res.downloadFile">
+                                            </a>
+                                        <!-- /ko -->
+                                    </div>
+                                <!-- /ko -->
+                            </div>
+                        <!-- /ko -->
+                    <!-- /ko -->
+
+
+                    <!-- BOT MESSAGE -->
+                    <!-- ko if: sender === root.ENUMS.SENDER.BOT -->
+
+                        <!-- ko if: type === root.ENUMS.PAYLOAD_TYPE.ATTACHMENT || type === root.ENUMS.PAYLOAD_TYPE.CARD || type === root.ENUMS.PAYLOAD_TYPE.LOCATION || type === root.ENUMS.PAYLOAD_TYPE.TEXT -->
+                            <!-- ko if: !root.isEmpty(headerText) -->
+                                <div class="oj-oda-chat-bubble oj-oda-chat-bot-message oj-oda-chat-card-header-message">
+                                    <div data-bind="text: headerText"></div>
+                                </div>
+                            <!-- /ko -->
+                        <!-- /ko -->
+
+                        <!-- TEXT MESSAGE -->
+                        <!-- ko if: type === root.ENUMS.PAYLOAD_TYPE.TEXT -->
+                            <div class="oj-oda-chat-bubble oj-oda-chat-bot-message">
+                                <div data-bind="text: text"></div>
+                            </div>
+                        <!-- /ko -->
+
+                        <!-- CARD MESSAGE -->
+                        <!-- ko if: type === root.ENUMS.PAYLOAD_TYPE.CARD -->
+                            <!-- VERTICAL CARDS -->
+                            <!-- ko if: layout === 'vertical' -->
+                                <!-- ko foreach: cards -->
+                                    <div class="oj-oda-chat-card">
+                                        <!-- ko if: $data.imageUrl -->
+                                            <img class="oj-oda-chat-card-image" :src="[[imageUrl]]" />
+                                        <!-- /ko -->
+
+                                        <!-- ko if: !root.isEmpty($data.title) -->
+                                            <div class="oj-oda-chat-card-title" data-bind="text: title"></div>
+                                        <!-- /ko -->
+
+                                        <!-- ko if: !root.isEmpty($data.description) -->
+                                            <div class="oj-oda-chat-card-description" data-bind="text: description"></div>
+                                        <!-- /ko -->
+
+                                        <!-- ko foreach: $data.actions -->
+                                            <button class="oj-oda-chat-action" :class="[[{'oj-oda-chat-disabled': $parents[1].isDisabled()}]]"
+                                                :disabled="[[$parents[1].isDisabled()]]" :tabindex="[[$parents[1].isDisabled() ? -1: 0]]"
+                                                data-bind="click: root.onClickAction.bind($data, $parents[1])">
+                                                <oj-bind-text value="[[label]]"></oj-bind-text>
+                                            </button>
+                                        <!-- /ko -->
+                                    </div>
+                                <!-- /ko -->
+                            <!-- /ko -->
+
+                            <!-- HORIZONTAL CARDS -->
+                            <!-- ko if: layout === 'horizontal' -->
+                                <oj-film-strip aria-label="Cards" arrow-placement="overlay" arrow-visibility="visible"
+                                    max-items-per-page="1" orientation="horizontal">
+                                    <!-- ko foreach: cards -->
+                                        <div class="oj-oda-chat-card">
+                                            <!-- ko if: $data.imageUrl -->
+                                                <img class="oj-oda-chat-card-image" :src="[[imageUrl]]" />
+                                            <!-- /ko -->
+
+                                            <!-- ko if: !root.isEmpty($data.title) -->
+                                                <div class="oj-oda-chat-card-title" data-bind="text: title"></div>
+                                            <!-- /ko -->
+
+                                            <!-- ko if: !root.isEmpty($data.description) -->
+                                                <div class="oj-oda-chat-card-description" data-bind="text: description"></div>
+                                            <!-- /ko -->
+
+                                            <!-- ko foreach: $data.actions -->
+                                                <button class="oj-oda-chat-action" :class="[[{'oj-oda-chat-disabled': $parents[1].isDisabled()}]]"
+                                                :disabled="[[$parents[1].isDisabled()]]" :tabindex="[[$parents[1].isDisabled() ? -1: 0]]"
+                                                data-bind="click: root.onClickAction.bind($data, $parents[1])">
+                                                    <!-- ko if: $data.imageUrl -->
+                                                        <img slot="startIcon" class="oj-oda-chat-action-icon" :src="[[imageUrl]]" width="16" height="16" />
+                                                    <!-- /ko -->
+                                                    <!-- ko if: $data.label -->
+                                                        <oj-bind-text value="[[label]]"></oj-bind-text>
+                                                    <!-- /ko -->
+                                                </button>
+                                            <!-- /ko -->
+                                        </div>
+                                    <!-- /ko -->
+                                </oj-film-strip>
+                            <!-- /ko -->
+                        <!-- /ko -->
+
+                        <!-- ATTACHMENT MESSAGE -->
+                        <!-- ko if: type === root.ENUMS.PAYLOAD_TYPE.ATTACHMENT -->
+                            <div class="oj-oda-chat-bubble oj-oda-chat-bot-message">
+                                <!-- ko if: attachmentType === root.ENUMS.ATTACHMENT_TYPE.IMAGE -->
+                                    <img class="oj-oda-chat-image" :src="[[attachmentUrl]]" />
+                                <!-- /ko -->
+
+                                <!-- ko if: attachmentType === root.ENUMS.ATTACHMENT_TYPE.VIDEO -->
+                                    <video class="oj-oda-chat-video" :src="[[attachmentUrl]]" controls>
+                                        <p>
+                                            <div
+                                                data-bind="text: root.res.incompatibleVideo">
+                                            </div>
+                                            <a :href="[[attachmentUrl]]" target="_blank" download data-bind="text: root.res.downloadFile"></a>
+                                        </p>
+                                    </video>
+                                <!-- /ko -->
+
+                                <!-- ko if: attachmentType === root.ENUMS.ATTACHMENT_TYPE.AUDIO -->
+                                    <audio class="oj-oda-chat-audio" :src="[[attachmentUrl]]" controls>
+                                        <p>
+                                            <div
+                                                data-bind="text: root.res.incompatibleAudio">
+                                            </div>
+                                            <a :href="[[attachmentUrl]]" target="_blank" download data-bind="text: root.res.downloadFile"></a>
+                                        </p>
+                                    </audio>
+                                <!-- /ko -->
+
+                                <!-- ko if: attachmentType === root.ENUMS.ATTACHMENT_TYPE.FILE -->
+                                    <a class="oj-oda-chat-file" :href="[[attachmentUrl]]" target="_blank" download
+                                        data-bind="text: root.res.downloadFile">
+                                    </a>
+                                <!-- /ko -->
+                            </div>
+                        <!-- /ko -->
+
+                        <!-- LOCATION MESSAGE -->
+                        <!-- ko if: type === root.ENUMS.PAYLOAD_TYPE.LOCATION -->
+                        <div class="oj-oda-chat-bubble oj-oda-chat-bot-message">
+                                <div data-bind="text: title"></div>
+
+                                <a class="oj-oda-chat-action oj-oda-chat-bot-location-url" :href="[[url]]" target="_blank"
+                                    data-bind="text: root.res.openMap"></a>
+                            </div>
+                        <!-- /ko -->
+
+                        <!-- ACTION BUTTONS -->
+                        <!-- ko if: type === root.ENUMS.PAYLOAD_TYPE.ATTACHMENT || type === root.ENUMS.PAYLOAD_TYPE.CARD || type === root.ENUMS.PAYLOAD_TYPE.LOCATION || type === root.ENUMS.PAYLOAD_TYPE.TEXT -->
+                            <!-- ko foreach: actions -->
+                                <button class="oj-oda-chat-action" :class="[[{'oj-oda-chat-disabled': $parent.isDisabled()}]]"
+                                    :disabled="[[$parent.isDisabled()]]" :tabindex="[[$parent.isDisabled() ? -1: 0]]"
+                                    data-bind="click: root.onClickAction.bind($data, $parent)">
+                                    <!-- ko if: $data.imageUrl -->
+                                        <img slot="startIcon" class="oj-oda-chat-action-icon" :src="[[imageUrl]]" width="16" height="16" />
+                                    <!-- /ko -->
+                                    <!-- ko if: $data.label -->
+                                        <oj-bind-text value="[[label]]"></oj-bind-text>
+                                    <!-- /ko -->
+                                </button>
+                            <!-- /ko -->
+
+                            <!-- ko foreach: globalActions -->
+                                <button class="oj-oda-chat-action" :class="[[{'oj-oda-chat-disabled': $parent.isDisabled()}]]"
+                                    :disabled="[[$parent.isDisabled()]]" :tabindex="[[$parent.isDisabled() ? -1: 0]]"
+                                    data-bind="click: root.onClickAction.bind($data, $parent)">
+                                    <!-- ko if: $data.imageUrl -->
+                                        <img slot="startIcon" class="oj-oda-chat-action-icon" :src="[[imageUrl]]" width="16" height="16" />
+                                    <!-- /ko -->
+                                    <!-- ko if: $data.label -->
+                                        <oj-bind-text value="[[label]]"></oj-bind-text>
+                                    <!-- /ko -->
+                                </button>
+                            <!-- /ko -->
+                        <!-- /ko -->
+
+                        <!-- ko if: type === root.ENUMS.PAYLOAD_TYPE.ATTACHMENT || type === root.ENUMS.PAYLOAD_TYPE.CARD || type === root.ENUMS.PAYLOAD_TYPE.LOCATION || type === root.ENUMS.PAYLOAD_TYPE.TEXT -->
+                            <!-- ko if: !root.isEmpty(footerText) -->
+                                <div class="oj-oda-chat-bubble oj-oda-chat-bot-message oj-oda-chat-card-footer-message">
+                                    <div data-bind="text: footerText"></div>
+                                </div>
+                            <!-- /ko -->
+                        <!-- /ko -->
+
+                        <!-- LOCATION REQUEST MESSAGE -->
+                        <!-- ko if: type === root.ENUMS.PAYLOAD_TYPE.LOCATION_REQUESTED -->
+                            <div class="oj-oda-chat-bubble oj-oda-chat-bot-message oj-oda-chat-location-request">
+                                <oj-progress class="oj-oda-chat-message-progress" type="circle" value="-1"></oj-progress>
+                                <div class="oj-oda-chat-location-request-message" data-bind="text: message"></div>
+                            </div>
+                        <!-- /ko -->
+
+                        <!-- LOCATION REQUEST DENIED MESSAGE -->
+                        <!-- ko if: type === root.ENUMS.PAYLOAD_TYPE.LOCATION_DENIED -->
+                        <div class="oj-oda-chat-bubble oj-oda-chat-bot-message oj-oda-chat-location-denied">
+                                <div class="oj-oda-chat-message-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                                        <circle cx="8" cy="8" r="8" fill="#e4001e" />
+                                        <path d="M11.686,5.817a1.063,1.063,0,0,0-1.5-1.5L8,6.5,5.818,4.314a1.063,1.063,0,0,0-1.5,1.5L6.5,8,4.314,10.183a1.063,1.063,0,0,0,1.5,1.5L8,9.5l2.183,2.183a1.063,1.063,0,0,0,1.5-1.5L9.5,8Z" fill="#fff" />
+                                    </svg>
+                                </div>
+                                <div data-bind="text: message"></div>
+                            </div>
+                        <!-- /ko -->
+
+                        <!-- RAW MESSAGE -->
+                        <!-- ko if: type === root.ENUMS.PAYLOAD_TYPE.RAW -->
+                            <div class="oj-oda-chat-bubble oj-oda-chat-bot-message">
+                                <div data-bind="text: payload"></div>
+                            </div>
+                        <!-- /ko -->
+
+                    <!-- /ko -->
+                </div>
+            <!-- /ko -->
+
+            <!-- ko if: isConnected() && isWaitingForResponse() -->
+                <div class="oj-oda-chat-message oj-oda-chat-message-left oj-oda-chat-message-loading">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 18"><path d="M18 12.99h-6.267L8 17.125a1.119 1.119 0 0 1-1.021-1.36V12.99H6a5.849 5.849 0 0 1-6-5.87A6.061 6.061 0 0 1 6 1h12a6.061 6.061 0 0 1 6 6.12 5.849 5.849 0 0 1-6 5.87z" fill="#d1d1d1"/><path d="M4 7a2 2 0 1 0 4 0 2 2 0 1 0-4 0" style="animation-name:dotScaleleft;animation-duration:1s;animation-iteration-count:infinite;transform-origin:20%;animation-delay:0s" fill="#fff"/><path d="M10 7a2 2 0 1 0 4 0 2 2 0 1 0-4 0" style="animation-name:dotScalecenter;animation-duration:1s;animation-iteration-count:infinite;transform-origin:43%;animation-delay:.2s" fill="#fff"/><path d="M16 7a2 2 0 1 0 4 0 2 2 0 1 0-4 0" style="animation-name:dotScaleright;animation-duration:1s;animation-iteration-count:infinite;transform-origin:70%;animation-delay:.4s" fill="#fff"/><style>@keyframes dotScaleleft{0%,to{transform:scale(1)}50%{transform:scale(1.25)}}@keyframes dotScalecenter{0%,to{transform:scale(1)}50%{transform:scale(1.25)}}@keyframes dotScaleright{0%,to{transform:scale(1)}50%{transform:scale(1.25)}}</style></svg>
+                </div>
+            <!-- /ko -->
+        </div>
+    </div>
+
+    <!-- footer -->
+    <div class="oj-oda-chat-footer">
+        <!-- Attachment -->
+        <!-- ko if: isAttachment() -->
+            <oj-button class="oj-oda-chat-footer-button oj-oda-chat-attach" chroming="borderless" display="icons"
+                disabled="[[!(isConnected() && isUserInteractive())]]"
+                on-oj-action="[[onClickAttach]]">
+                <svg slot="startIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <path d="M23.1 9.9l-12.3 12-1-1L21.7 9a3.2 3.2 0 0 0-.4-4.5c-2.4-2.4-5 0-5 0l-13 13.1a1.9 1.9 0 0 0 .1 3c1.6 1.6 2.5.2 2.5.2L19 7.8a1.3 1.3 0 0 0 .2-1.3 1.2 1.2 0 0 0-1.2.3L7.5 17.5l-1.2-1 11-11.1s2.2-1 3.3 0-.1 3-.1 3L7.2 21.9s-2 2.8-5-.1a3.4 3.4 0 0 1-.4-4.9L16.1 2.6a5.7 5.7 0 0 1 6.6 1c2.7 2.8.4 6.3.4 6.3z" />
+                </svg>
+                <oj-bind-text value="[[res.upload]]"></oj-bind-text>
+            </oj-button>
+
+            <input type="file" class="oj-oda-chat-file-upload" :accept="[[supportedMediaTypes]]" data-bind="event: {
+                change: onFileUpload
+            }">
+        <!-- /ko -->
+
+        <!-- User input -->
+        <oj-input-text class="oj-oda-chat-user-input" clear-icon="conditional" virtual-keyboard="text"
+            aria-placeholder="[[res.inputPlaceholder]]"
+            disabled="[[!(isConnected() && isUserInteractive())]]"
+            placeholder="[[res.inputPlaceholder]]"
+            raw-value="{{userInputTextRaw}}"
+            value="{{userInputText}}">
+        </oj-input-text>
+
+        <!-- User action -->
+        <!-- Send button -->
+        <!-- ko ifnot: isSpeech() && (isSpeechActive() || isSpeechRunning()) -->
+            <oj-button class="oj-oda-chat-footer-button oj-oda-chat-send" chroming="borderless" display="icons"
+                disabled="[[!isConnected()]]"
+                on-oj-action="[[onClickSend]]">
+                <svg slot="startIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <path d="M.992 1.4l22.631 11.128L.859 23.436l.422-8.822 12.431-2.077L1.517 10.1z" />
+                </svg>
+                <oj-bind-text value="[[res.send]]"></oj-bind-text>
+            </oj-button>
+        <!-- /ko -->
+
+        <!-- Speech button -->
+        <!-- ko if: isSpeech() && (isSpeechActive() || isSpeechRunning()) -->
+            <oj-button class="oj-oda-chat-footer-button oj-oda-chat-speech" chroming="borderless" display="icons"
+                :class="[[{'oj-oda-chat-speech-recording': isSpeechRunning()}]]"
+                disabled="[[!isConnected()]]"
+                on-oj-action="[[onClickSpeech]]">
+                <svg slot="startIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/><path d="M0 0h24v24H0z" fill="none"/>
+                </svg>
+                <oj-bind-text value="[[res.speech]]"></oj-bind-text>
+            </oj-button>
+        <!-- /ko -->
+    </div>
+</div>

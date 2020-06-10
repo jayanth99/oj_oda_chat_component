@@ -1,0 +1,231 @@
+{
+    "name": "oj-oda-chat",
+    "version": "1.0.1",
+    "jetVersion": ">=7.0.0 <9.0.0",
+    "displayName": "ODA Chat",
+    "description": "Embeddable chat component for integrating Oracle Digital Assistant into web apps.",
+    "license": "https://opensource.org/licenses/UPL",
+    "extension": {
+        "catalog": {
+            "category": "Data and AI",
+            "coverImage": "extension/images/cover-image.png",
+            "screenshots": {
+                "1": "extension/images/oda-chat-1.png",
+                "2": "extension/images/oda-chat-2.png"
+            },
+            "tags": [
+                "oda",
+                "skill",
+                "da",
+                "bot"
+            ]
+        }
+    },
+    "icon": {
+        "iconPath": "extension/images/icon-enabled.svg",
+        "hoverIconPath": "extension/images/icon-hovered.svg",
+        "selectedIconPath": "extension/images/icon-selected.svg"
+    },
+    "properties": {
+        "uri": {
+            "description": "The server URI is the hostname of the ODA server to which component will connect",
+            "displayName": "Server URI",
+            "type": "string",
+            "format": "uri",
+            "required": true
+        },
+        "channelId": {
+            "description": "Id of the Web channel to which component will connect",
+            "displayName": "Channel Id",
+            "type": "string"
+        },
+        "userId": {
+            "description": "An optional id which is used to identify the user",
+            "displayName": "User Id",
+            "type": "string"
+        },
+        "tokenGenerator": {
+            "description": "Function that is used to generate signed JWT token. The function must return a Promise that is resolved to a JWT token string.",
+            "displayName": "Signed JWT token generator function",
+            "type": "function():Promise"
+        },
+        "chatTitle": {
+            "description": "The title of the component displayed at the header",
+            "displayName": "Chat Title",
+            "type": "string",
+            "translatable": true
+        },
+        "initMessage": {
+            "description": "Initial text message that will be sent to the server on first connection without being displayed in conversation. It is typically used to imitate skill initiated conversation to the user.",
+            "displayName": "Initial Message",
+            "type": "string",
+            "translatable": true
+        },
+        "expand": {
+            "description": "Flag to determine and set whether the chat component is expanded or collapsed",
+            "displayName": "Expand Chat",
+            "type": "boolean",
+            "writeback": true,
+            "value": false
+        },
+        "networkStatus": {
+            "description": "Enumeration that indicates whether the chat component is connected to server",
+            "displayName": "Server connection status",
+            "enumValues": [
+                "CONNECTING",
+                "OPEN",
+                "CLOSING",
+                "CLOSED"
+            ],
+            "type": "enum",
+            "value": "CLOSED",
+            "readOnly": true,
+            "writeback": true
+        },
+        "unseenCount": {
+            "description": "Count of messages from server which haven't been seen by the user yet",
+            "displayName": "Unseen message count",
+            "type": "number",
+            "readOnly": true,
+            "writeback": true,
+            "value": 0
+        },
+        "delegate": {
+            "description": "Allows setting callbacks to modify messages from server before displaying or sending user messages to server. Messages are passed as parameter to the callbacks and expected to be returned, optionally with some modifications. If no value is returned, the original message is used.",
+            "writeback": false,
+            "type": "object",
+            "properties": {
+                "beforeDisplay": {
+                    "description": "Callback that is called before display of message received from server",
+                    "displayName": "Delegate before displaying skill/DA message",
+                    "type": "function(message):object"
+                },
+                "beforeSend": {
+                    "description": "Callback that is called before sending user message to server",
+                    "displayName": "Delegate before sending user message",
+                    "type": "function(message):object"
+                },
+                "beforePostbackSend": {
+                    "description": "Callback that is called before sending user postback message to server",
+                    "displayName": "Delegate before sending postback message",
+                    "type": "function(message):object"
+                }
+            }
+        },
+        "displayOptions": {
+            "description": "Options for configuring features in the component",
+            "writeback": false,
+            "type": "object",
+            "properties": {
+                "attachment": {
+                    "description": "Enables uploading files to the server",
+                    "displayName": "Enable Attachment",
+                    "type": "boolean",
+                    "value": true
+                },
+                "colorTheme": {
+                    "description": "Set a color to be applied as the theme to the component. The header and actions depicted in the color set by this field.",
+                    "displayName": "Theme Color",
+                    "format": "color",
+                    "type": "string",
+                    "value": "#1b8fd2"
+                },
+                "connectionStatus": {
+                    "description": "Enables display of live connection status to server in header",
+                    "displayName": "Display Connection Status",
+                    "type": "boolean",
+                    "value": true
+                },
+                "erasable": {
+                    "description": "Enables display of button to erase messages from current conversation",
+                    "displayName": "Erase Message History",
+                    "type": "boolean",
+                    "value": true
+                },
+                "speech": {
+                    "description": "Enables speech service integration that allows users to use their voice for forming messages, convert to text and send to server",
+                    "displayName": "Speech Recognition",
+                    "type": "boolean",
+                    "value": false
+                },
+                "utterBotMessage": {
+                    "description": "Enables button to activate using client's speech synthesis to utter bot responses",
+                    "displayName": "Utter Bot Responses",
+                    "type": "boolean",
+                    "value": false
+                }
+            }
+        }
+    },
+    "methods": {
+        "connect": {
+            "description": "Establishes connection to the chat server. If the connection is already active, the request is rejected.",
+            "internalName": "_connect",
+            "return": "Promise"
+        },
+        "disconnect": {
+            "description": "Closes active connection to the chat server",
+            "internalName": "_disconnect"
+        },
+        "sendAttachment": {
+            "description": "Uploads file to chat server",
+            "internalName": "_sendAttachment",
+            "params": [
+                {
+                    "description": "File to send to server",
+                    "name": "file",
+                    "type": "File"
+                }
+            ],
+            "return": "Promise"
+        },
+        "sendMessage": {
+            "description": "Sends a message to chat server",
+            "internalName": "_sendMessage",
+            "params": [
+                {
+                    "description": "Text or message payload object to send to server",
+                    "name": "message",
+                    "type": "object|string"
+                }
+            ],
+            "return": "Promise"
+        },
+        "updateUser": {
+            "description": "Updates user profile at chat server",
+            "internalName": "_updateProfile",
+            "params": [
+                {
+                    "description": "User profile object that is updated to server",
+                    "name": "profile",
+                    "type": "object"
+                }
+            ],
+            "return": "Promise"
+        }
+    },
+    "events": {
+        "chatMessageReceived": {
+            "description": "Triggered immediately after a message is received",
+            "bubbles": false,
+            "cancelable": false,
+            "detail": {
+                "message": {
+                    "description": "Message object that is received",
+                    "type": "object"
+                }
+            }
+        },
+        "chatMessageSend": {
+            "description": "Triggered immediately after a message is sent",
+            "bubbles": false,
+            "cancelable": false,
+            "detail": {
+                "message": {
+                    "description": "Message object that is sent",
+                    "type": "object"
+                }
+            }
+        }
+    }
+}

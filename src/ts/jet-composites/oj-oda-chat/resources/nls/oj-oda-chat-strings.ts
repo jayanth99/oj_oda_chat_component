@@ -1,0 +1,40 @@
+export =  {
+    'root': {
+        'oj-oda-chat': {
+            'attachmentaudio': 'Audio attachment',
+            'attachmentfile': 'File attachment',
+            'attachmentimage': 'Image attachment',
+            'attachmentvideo': 'Video attachment',
+            'audioResponseOff': 'Mute utterance',
+            'audioResponseOn': 'Unmute utterance',
+            'card': 'Card',
+            'cardImagePlaceholder': 'Loading image',
+            'clear': 'Clear Chat',
+            'close': 'Close',
+            'closed': 'Closed',
+            'closing': 'Closing',
+            'connected': 'Connected',
+            'connecting': 'Connecting',
+            'disconnected': 'Disconnected',
+            'downloadFile': 'Download File',
+            'incompatibleAudio': 'Your browser doesn\'t support HTML 5 audio. Use the link below to download the audio instead.',
+            'incompatibleVideo': 'Your browser doesn\'t support HTML 5 video. Use the link below to download the video instead.',
+            'inputPlaceholder': 'Type a message',
+            'openMap': 'Open Map',
+            'previousChats': 'Previous conversations',
+            'rawMessage': 'Raw Message',
+            'requestLocation': 'Requesting location',
+            'requestLocationString': 'Sorry, your location is not accessible. Please provide the location as text instead.',
+            'retryMessage': 'Try again',
+            'shareComplete': 'Content shared.',
+            'shareIncomplete': 'Could not share content.',
+            'shareUnsupported': 'Sharing feature is not supported on this client.',
+            'send': 'Send',
+            'speech': 'Speak and send',
+            'upload': 'Upload Document',
+            'uploadFailed': 'Upload failed.',
+            'uploadFileSizeLimitExceeded': 'Upload failed. File size should not be more than 25MB.',
+            'uploadUnsupportedFileType': 'Upload failed. Unsupported file type.'
+        }
+    }
+};

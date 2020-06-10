@@ -2,6 +2,8 @@
   Copyright (c) 2020, Oracle and/or its affiliates.
   The Universal Permissive License (UPL), Version 1.0
 -->
+
+
 <!-- Chat button -->
 <oj-button class="oj-oda-chat-button" on-oj-action="[[onClickChatButton]]">
     <span>
@@ -407,28 +409,91 @@
         </div>
     </div>
 
-    <!-- footer -->
+    <!-- footer  on-oj-action="[[onClickAttach]]">-->
     <div class="oj-oda-chat-footer">
-        <!-- Attachment -->
-        <!-- ko if: isAttachment() -->
-            <oj-button class="oj-oda-chat-footer-button oj-oda-chat-attach" chroming="borderless" display="icons"
-                disabled="[[!(isConnected() && isUserInteractive())]]"
-                on-oj-action="[[onClickAttach]]">
-                <svg slot="startIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                    <path d="M23.1 9.9l-12.3 12-1-1L21.7 9a3.2 3.2 0 0 0-.4-4.5c-2.4-2.4-5 0-5 0l-13 13.1a1.9 1.9 0 0 0 .1 3c1.6 1.6 2.5.2 2.5.2L19 7.8a1.3 1.3 0 0 0 .2-1.3 1.2 1.2 0 0 0-1.2.3L7.5 17.5l-1.2-1 11-11.1s2.2-1 3.3 0-.1 3-.1 3L7.2 21.9s-2 2.8-5-.1a3.4 3.4 0 0 1-.4-4.9L16.1 2.6a5.7 5.7 0 0 1 6.6 1c2.7 2.8.4 6.3.4 6.3z" />
-                </svg>
-                <oj-bind-text value="[[res.upload]]"></oj-bind-text>
-            </oj-button>
+        
+            <!--my code begins-->
 
+                <!-- This popup shows separate options for uploading files of different type and also share location -->
+
+                <oj-popup id="popup1" position.my.horizontal="center" position.my.vertical="bottom"
+                    position.at.horizontal="center" position.at.vertical="bottom" position.of="window" position.offset.y="-250" 
+                    position.offset.x="-100" modality="modal" >
+                    <div style = "background-color:yellow; position:relative; z-index:2147483647;">
+                    
+                        <!-- It enables User to upload image file only -->
+
+                        <oj-file-picker class='oj-filepicker-custom' select-on='click' accept="[[acceptArr1]]" selection-mode="single" 
+                            on-oj-select='[[onFileUpload]]'>
+                            <oj-button slot='trigger' style="width: 170px; height:30px;">
+                                <span slot='endIcon' class='oj-fwk-icon oj-fwk-icon-plus'></span>
+                                Add an Image File    
+                            </oj-button>
+                        </oj-file-picker>
+                        <br><br>
+
+                        <!-- It enables User to upload video file only -->
+
+                        <oj-file-picker class='oj-filepicker-custom' select-on='click' accept="[[acceptArr2]]" selection-mode="single" 
+                            on-oj-select='[[onFileUpload]]'>
+                            <oj-button slot='trigger' style="width: 170px; height:30px;">
+                                <span slot='endIcon' class='oj-fwk-icon oj-fwk-icon-plus'></span>
+                                Add a Video File    
+                            </oj-button>
+                        </oj-file-picker>
+                        <br><br>
+                        
+                        <!-- It enables User to upload audio file only -->
+
+                        <oj-file-picker class='oj-filepicker-custom' select-on='click' accept="[[acceptArr3]]" selection-mode="single" 
+                            on-oj-select='[[onFileUpload]]'>
+                            <oj-button slot='trigger' style="width: 170px; height:30px;">
+                                <span slot='endIcon' class='oj-fwk-icon oj-fwk-icon-plus'></span>
+                                Add an Audio File    
+                            </oj-button>
+                        </oj-file-picker>
+                        <br><br>
+
+                        <!-- It enables User to upload other types of file (i.e. except audio, video or image) only -->
+
+                        <oj-file-picker class='oj-filepicker-custom' select-on='click' accept="[[acceptArr4]]" selection-mode="single" 
+                            on-oj-select='[[onFileUpload]]'>
+                            <oj-button slot='trigger' style="width: 170px; height:30px;">
+                                <span slot='endIcon' class='oj-fwk-icon oj-fwk-icon-plus'></span>
+                                Add a File    
+                            </oj-button>
+                        </oj-file-picker>
+                        <br><br>
+                        
+                        <oj-button id="btnMap" slot='startIcon' style="width: 170px; height:30px;" on-oj-action="[[getPosition]]">Share Location</oj-button><br><br>
+                        <oj-button id="btnCancel" slot='startIcon' style="width: 170px; height:30px;" on-oj-action="[[cancelListener]]">Cancel</oj-button>
+
+                    </div>
+                </oj-popup>
+
+                <!-- Button showing for uploading attachment -->
+
+                <oj-button id="btnGo" display="icons" on-oj-action="[[openListener]]">Upload Attachment
+                    <svg slot="startIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M23.1 9.9l-12.3 12-1-1L21.7 9a3.2 3.2 0 0 0-.4-4.5c-2.4-2.4-5 0-5 0l-13 13.1a1.9 1.9 0 0 0 .1 3c1.6 1.6 2.5.2 2.5.2L19 7.8a1.3 1.3 0 0 0 .2-1.3 1.2 1.2 0 0 0-1.2.3L7.5 17.5l-1.2-1 11-11.1s2.2-1 3.3 0-.1 3-.1 3L7.2 21.9s-2 2.8-5-.1a3.4 3.4 0 0 1-.4-4.9L16.1 2.6a5.7 5.7 0 0 1 6.6 1c2.7 2.8.4 6.3.4 6.3z" />
+                    </svg>
+                </oj-button>
+
+            <!--my code ends -->
+        
+            <!-- Attachment -->
+            
+            <!-- ko if: isAttachment() -->
+            
+            <!--
             <input type="file" class="oj-oda-chat-file-upload" :accept="[[supportedMediaTypes]]" data-bind="event: {
                 change: onFileUpload
-            }">
+            }">-->
         <!-- /ko -->
 
-        <!-- User input -->
+        <!-- User input disabled="[[!(isConnected() && isUserInteractive())]]"-->
         <oj-input-text class="oj-oda-chat-user-input" clear-icon="conditional" virtual-keyboard="text"
             aria-placeholder="[[res.inputPlaceholder]]"
-            disabled="[[!(isConnected() && isUserInteractive())]]"
             placeholder="[[res.inputPlaceholder]]"
             raw-value="{{userInputTextRaw}}"
             value="{{userInputText}}">

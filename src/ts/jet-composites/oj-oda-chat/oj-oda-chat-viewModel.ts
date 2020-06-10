@@ -10,6 +10,34 @@ import * as componentStrings from 'ojL10n!./resources/nls/oj-oda-chat-strings';
 import Context = require('ojs/ojcontext');
 import Composite = require('ojs/ojcomposite');
 import 'ojs/ojknockout';
+import 'ojs/ojpopup';
+import { ojPopup, ojPopupEventMap } from 'ojs/ojpopup';
+import * as AnimationUtils from 'ojs/ojanimation';
+//To typecheck the element APIs, import as below.
+import {ojMenu} from "ojs/ojmenu";
+
+//For the transpiled javascript to load the element's module, import as below
+import "ojs/ojmenu";
+
+//To typecheck the element APIs, import as below.
+import {ojInputText} from "ojs/ojinputtext";
+
+//For the transpiled javascript to load the element's module, import as below
+import "ojs/ojinputtext";
+
+import "ojs/ojarraydataprovider";
+import {ojListView} from "ojs/ojlistview";
+import "ojs/ojlistview";
+import "ojs/ojlabel";
+import "ojs/ojcheckboxset";
+
+import * as Bootstrap from 'ojs/ojbootstrap';
+import { ojMenuEventMap } from 'ojs/ojmenu';
+import 'ojs/ojmenu';
+import 'ojs/ojbutton';
+import 'ojs/ojoption'; 
+import 'ojs/ojfilepicker';
+
 
 import 'ojs/ojbutton';
 import 'ojs/ojfilmstrip';
@@ -95,6 +123,7 @@ export default class ViewModel implements Composite.ViewModel<Composite.Properti
     private _chatFooter: HTMLElement;
     private _chatInput: HTMLElement;
     private _chatUpload: HTMLElement;
+    private _addAttachment: HTMLElement;
 
     constructor(context: Composite.ViewModelContext<Composite.PropertiesType>) {
         const elementContext: Context = Context.getContext(context.element);
@@ -203,6 +232,152 @@ export default class ViewModel implements Composite.ViewModel<Composite.Properti
         return true;
     };
 
+
+    /*
+    //For Keeping track of files that have been uploaded
+  
+    public fileNames = ko.observableArray([]);
+  
+    // Activated whenever a file is uploaded
+
+    public selectListener = function (event) {
+        this.invalidMessage('');
+        var files = event.detail.files;
+        for (var i = 0; i < files.length; i++) {
+            this.fileNames.push(files[i].name);
+        }
+    }.bind(this);
+    public disabled = ko.observableArray();
+
+    public isDisabled = ko.pureComputed(function () {
+        return this.disabled()[0] === 'disable' ? true : false;
+    }.bind(this));
+    // String to display invalid message
+
+    public invalidMessage = ko.observable('');
+
+    // activated whenever user uploads file of different type 
+
+    public invalidListener = function(event) {
+        this.fileNames([]);
+        this.invalidMessage("{severity: '" + event.detail.messages[0].severity + "', summary: '" + event.detail.messages[0].summary + "'}");
+        var promise = event.detail.until;
+        if (promise) {
+            promise.then(function(){
+                            this.invalidMessage('');
+                        }.bind(this));
+        }
+    }.bind(this);
+    // Starts required Animation for popup
+
+    public startAnimationListener = (event: ojPopupEventMap['ojAnimateStart']) => {
+        let ui = event.detail;
+        if ((event.target as ojPopup).id !== 'popup1') { return; }
+
+        if (ui.action === 'open') {
+            event.preventDefault();
+            let options = { direction: 'top' };
+            AnimationUtils.slideIn(ui.element, options).then(ui.endCallback);
+        } else if (ui.action === 'close') {
+            event.preventDefault();
+            ui.endCallback();
+        }
+    };
+
+    // opens file picker to upload files of image type
+
+    public imageHandler() {
+        let popup = document.getElementById('popupImage') as ojPopup;
+        popup.open('#btnImage');
+    }
+    
+    // opens file picker to upload files of video type
+    
+    public videoHandler() {
+        let popup = document.getElementById('popupVideo') as ojPopup;
+        popup.open('#btnVideo');
+    }
+
+    // opens file picker to upload files of audio type
+    
+    public audioHandler() {
+        let popup = document.getElementById('popupAudio') as ojPopup;
+        popup.open('#btnAudio');
+    }
+
+    // opens file picker to upload files of other types which are not image, audio or video
+    
+    public fileHandler() {
+        let popup = document.getElementById('popupFile') as ojPopup;
+        popup.open('#btnFile');
+    }
+*/
+    
+
+
+
+
+    // my code begins //
+
+    // Listens for button click to open popUp to upload different file types
+
+    public openListener() {
+        let popup = document.getElementById('popup1') as ojPopup;
+        popup.open('#btnGo');
+    };
+      
+
+    // Whenever user press "Cancel" button, this is activated to close the popup
+
+    public cancelListener() {
+        let popup = document.getElementById('popup1') as ojPopup;
+        popup.close();
+    };
+
+    /**
+     * Callback for clicking Share location button
+     * Sets a token indicating location is requested
+     *
+     */
+    
+    public getPosition = () => {
+        
+        this._isLocationRequest = true;
+        this._sendUserLocationMessage();
+    }
+
+    // Specifying acceptable types for images
+
+    public acceptStr1 = ko.observable('image/*');
+    public acceptArr1 = ko.pureComputed(function () {
+        var accept = this.acceptStr1();
+        return accept ? accept.split(',') : [];
+    }.bind(this));
+
+    // Specifying acceptable types for videos
+
+    public acceptStr2 = ko.observable('video/*');
+    public acceptArr2 = ko.pureComputed(function () {
+        var accept = this.acceptStr2();
+        return accept ? accept.split(',') : [];
+    }.bind(this));
+
+    // Specifying acceptable types for audios
+
+    public acceptStr3 = ko.observable('audio/*');
+    public acceptArr3 = ko.pureComputed(function () {
+        var accept = this.acceptStr3();
+        return accept ? accept.split(',') : [];
+    }.bind(this));
+
+    // Specifying acceptable types for other types (i.e. except image or video or audio) of files
+
+    acceptArr4= ['.7z', '.csv', '.doc', '.docx', '.eml', '.ics', '.key', '.log',
+                '.neon', '.numbers', '.odt', '.pages', '.pdf', '.pps', '.ppsx',
+                '.ppt', '.pptx', '.xls', '.xlsx', '.xml', '.yml', '.yaml', '.txt',
+                '.vcf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    
+
     /**
      * Callback for clicking file upload button
      * Displays user message indicating file upload progress and calls
@@ -213,7 +388,42 @@ export default class ViewModel implements Composite.ViewModel<Composite.Properti
      * @param {object} data
      * @param {Event} event
      */
-    public onFileUpload = (data, event) => {
+    public onFileUpload = (event) => {
+        
+        if (event?.detail?.files?.length > 0) {
+            const file = event.detail.files[0];
+            const attachmentMessage = new UserAttachmentMessage(file.name, file.type);
+            this.messages.push(attachmentMessage);
+
+            this._sendAttachment(file)
+                .then((result) => {
+                    attachmentMessage.isUploaded(true);
+                    attachmentMessage.url(result.url);
+                })
+                .catch((errorCode) => {
+                    attachmentMessage.isUploaded(false);
+                    switch (errorCode) {
+                        case AttachmentService.ERROR.BAD_REQUEST:
+                            attachmentMessage.errorMessage(this.res.uploadFailed);
+                            break;
+                        case AttachmentService.ERROR.PAYLOAD_TOO_LARGE:
+                            attachmentMessage.errorMessage(this.res.uploadFileSizeLimitExceeded);
+                            break;
+                        case AttachmentService.ERROR.UNSUPPORTED_MEDIA_TYPE:
+                            attachmentMessage.errorMessage(this.res.uploadUnsupportedFileType);
+                            break;
+                    }
+                });
+            event.target.value = '';
+        }
+    };
+
+    // my code ends //
+
+
+
+    /*
+    public onFileUpload = function (event) {
         if (event?.target?.files?.length > 0) {
             const file = event.target.files[0];
             const attachmentMessage = new UserAttachmentMessage(file.name, file.type);
@@ -240,7 +450,7 @@ export default class ViewModel implements Composite.ViewModel<Composite.Properti
                 });
             event.target.value = '';
         }
-    };
+    }.bind(this);*/
 
     public onClickSpeech = () => {
         if (this.isSpeechRunning()) {
